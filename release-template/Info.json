@@ -1,0 +1,12 @@
+{
+  "Id": "ADOOMFAIAccelerator",
+  "DisplayName": "ADOOMFAI Accelerator",
+  "Version": "0.5.4",
+  "EntryMethod": "JAMod.Bootstrap.Bootstrap.Setup",
+  "LoadAfter": [
+    "JALib",
+    "PACL2"
+  ],
+  "AssemblyName": "JAMod.Bootstrap.dll",
+  "Author": "kineticnapier"
+}

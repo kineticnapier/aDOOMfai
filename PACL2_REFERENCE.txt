@@ -1,0 +1,3 @@
+Target tested against: PACL2 2.5.400
+Expected PACL2 mod id: PACL2
+This project intentionally does not redistribute PACL2.dll.

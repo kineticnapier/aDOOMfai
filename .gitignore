@@ -1,0 +1,23 @@
+# .NET
+bin/
+obj/
+dist/
+
+# Native build
+native/build/
+native/_compiler_probe/
+native/third_party/
+native/adoom_native.dll
+
+# Game data — NEVER commit commercial IWADs
+iwad/
+*.wad
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+.DS_Store
+Thumbs.db

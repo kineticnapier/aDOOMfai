@@ -1,0 +1,8 @@
+{
+  "AssemblyPath": "ADOOMFAIAccelerator.dll",
+  "ClassName": "ADOOMFAIAccelerator.Main",
+  "AssemblyRequireModPath": true,
+  "BootstrapVersion": 1,
+  "NoChangeAssemblyName": true,
+  "Gid": -1
+}

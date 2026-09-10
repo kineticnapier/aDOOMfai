@@ -1,21 +1,17 @@
-# ADOOMFAI
+# aDOOMfai
 
-**DOOM hosted inside A Dance of Fire and Ice.**
+**A Dance of Fire and Ice の中で DOOM を動かすプロジェクト。**
 
-ADOOMFAI started as a PACL2 renderer experiment: first thousands of individual
-`MoveDecorations` calls, then batched framebuffer updates, and finally a native
-`doomgeneric` host.
+当初は PACL2 だけで DOOM 風レンダラを作る実験として始まり、数千個の `MoveDecorations` 呼び出し、フレームバッファのバッチ更新を経て、最終的にネイティブの `doomgeneric` を ADOFAI 内へ組み込む構成になりました。
 
-The final version runs the DOOM-compatible engine in native C, connects it to an
-ADOFAI/Unity mod written in C#, and displays the original **320x200** framebuffer
-through a single ADOFAI decoration.
+現在の最終版では、DOOM 互換エンジンをネイティブ C で動かし、C# 製の ADOFAI / Unity Mod から接続し、**320x200** のフレームバッファを 1 個の ADOFAI Decoration に表示します。
 
-## Architecture
+## 構成
 
 ```text
-ADOFAI chart
+ADOFAI 譜面
     |
-    | one PACL2 attach command
+    | PACL2 で一度だけ attach
     v
 ADOOMFAIAccelerator.dll (C# / JALib / UMM)
     |
@@ -31,61 +27,62 @@ doomgeneric / DOOM engine
 Unity Texture2D
     |
     v
-ADOFAI decoration
+ADOFAI Decoration
 ```
 
-After the initial attach, PACL2 is no longer in the per-frame DOOM render loop.
+最初の attach が終わった後、PACL2 は DOOM の毎フレーム描画ループには関与しません。
 
-## Current status
+## 現在の状態
 
-- Native doomgeneric engine: working
-- Original 320x200 framebuffer: working
-- IWAD loading: working
-- Keyboard input: working
-- ADOFAI display integration: working
-- Point-filtered framebuffer: working
-- Vertical orientation fix: included
-- Native sound/music: not implemented in this PoC
+- ネイティブ doomgeneric エンジン: 動作確認済み
+- 320x200 フレームバッファ: 動作確認済み
+- IWAD 読み込み: 動作確認済み
+- キーボード入力: 動作確認済み
+- ADOFAI 内への表示: 動作確認済み
+- Point Filter での表示: 対応済み
+- 上下反転問題: 修正済み
+- ネイティブ音声 / 音楽: この PoC では未実装
 
-## Requirements
+## 必要なもの
 
 - Windows
-- A Dance of Fire and Ice with Unity Mod Manager / JALib setup
+- A Dance of Fire and Ice
+- Unity Mod Manager / JALib 環境
 - PACL2
-- .NET SDK capable of building the mod project
-- MSYS2 UCRT64 with GCC, CMake and Ninja
-- A compatible IWAD
+- Mod をビルドできる .NET SDK
+- GCC / CMake / Ninja を入れた MSYS2 UCRT64
+- 対応する IWAD
 
-The build helper looks for the common MSYS2 path:
+ビルドスクリプトは通常、次の MSYS2 パスを自動検出します。
 
 ```text
 C:\msys64\ucrt64\bin
 ```
 
-## Build
+## ビルド
 
 ```powershell
 .\build.ps1 -ManagedPath "C:\Program Files (x86)\Steam\steamapps\common\A Dance of Fire and Ice\A Dance of Fire and Ice_Data\Managed"
 ```
 
-The build process:
+ビルド時には以下を行います。
 
-1. Fetches the pinned `doomgeneric` revision.
-2. Builds `adoom_native.dll`.
-3. Builds `ADOOMFAIAccelerator.dll`.
-4. Packages the mod.
+1. 固定した revision の `doomgeneric` を取得
+2. `adoom_native.dll` をビルド
+3. `ADOOMFAIAccelerator.dll` をビルド
+4. Mod をパッケージ化
 
 ## IWAD
 
-**No commercial IWAD is included.**
+**商用 DOOM の IWAD はこのリポジトリには含まれていません。**
 
-Place one compatible IWAD in:
+対応する IWAD を次の場所へ 1 個入れてください。
 
 ```text
 Mods\ADOOMFAIAccelerator\iwad\
 ```
 
-Examples:
+例:
 
 ```text
 DOOM.WAD
@@ -94,38 +91,46 @@ freedoom1.wad
 freedoom2.wad
 ```
 
-You can also set the `ADOOMFAI_IWAD` environment variable to an explicit WAD path.
+`ADOOMFAI_IWAD` 環境変数で WAD のパスを直接指定することもできます。
 
-## Controls
+本家 DOOM の WAD を使う場合は、自分が正規に所有しているものを使用してください。自由に配布可能な代替データとして Freedoom も使用できます。
 
-| Key | Action |
+## 操作
+
+| キー | 動作 |
 |---|---|
-| Up / W | Forward |
-| Down / S | Backward |
-| Left / A | Turn left |
-| Right / D | Turn right |
-| Ctrl | Fire |
-| Space | Use / open |
-| Shift | Run |
-| 1-7 | Weapon keys |
-| Tab | Automap |
-| Esc | Menu |
-| Enter | Confirm |
+| ↑ / W | 前進 |
+| ↓ / S | 後退 |
+| ← / A | 左を向く |
+| → / D | 右を向く |
+| Ctrl | 攻撃 |
+| Space | 使用 / ドアを開ける |
+| Shift | 走る |
+| 1-7 | 武器変更 |
+| Tab | オートマップ |
+| Esc | メニュー |
+| Enter | 決定 |
 
-## Chart
+現状の `A/D` はストレイフではなく旋回です。
 
-The minimal wrapper chart is in [`chart/`](chart/). It contains one 320x200
-framebuffer decoration and one PACL2 attach program.
+## 譜面
 
-## How this project evolved
+最小構成のラッパー譜面は [`chart/`](chart/) にあります。
 
-See [`docs/CHALLENGE.md`](docs/CHALLENGE.md) for the progression from a
-2,048-decoration renderer to the native DOOM host.
+内容は、320x200 のフレームバッファ表示用 Decoration 1 個と、ネイティブ DOOM ホストを attach する PACL2 Program だけです。
 
-## License
+## このプロジェクトの経緯
 
-ADOOMFAI source is distributed under **GPL-2.0-or-later** to remain compatible with
-the DOOM-derived native engine code it links with. See [`LICENSE`](LICENSE).
+2048 個の Decoration を直接更新する方式から、バッチ描画、320x200 化、そして doomgeneric の組み込みへ至るまでの経緯は [`docs/CHALLENGE.md`](docs/CHALLENGE.md) にまとめています。
 
-Commercial DOOM game data is not covered by this repository's source-code license
-and is not distributed here.
+最終的な構成は、厳密には「ADOFAI だけで DOOM を再実装した」のではなく、**ネイティブの DOOM 互換エンジンを ADOFAI 内でホストし、その映像と入力を ADOFAI に接続したもの**です。
+
+## ライセンス
+
+ADOOMFAI のソースコードは、リンクしている DOOM 由来コードとの互換性のため **GPL-2.0-or-later** で配布します。詳細は [`LICENSE`](LICENSE) を参照してください。
+
+商用 DOOM のゲームデータはこのソースコードのライセンス対象ではなく、このリポジトリでは配布しません。
+
+## 注意
+
+このプロジェクトは非公式の技術実験 / ファンプロジェクトです。id Software、Bethesda、ZeniMax、7th Beat Games、doomgeneric の開発者とは関係ありません。
